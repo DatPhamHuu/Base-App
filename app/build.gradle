@@ -4,12 +4,12 @@ plugins {
 }
 apply from: '../dependencies.gradle'
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
-        applicationId "com.du21.basewdx"
-        minSdk 21
-        targetSdk 32
+        applicationId "com.wdx.app"
+        minSdk 24
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -40,10 +40,12 @@ dependencies {
     implementation deps.retrofit.runtime
     implementation deps.retrofit.gson
 
-    implementation deps.okhttp.okhttp
     implementation deps.okhttp.logging
 
     implementation deps.gson.gson
+
+    implementation deps.glide.glide
+    annotationProcessor deps.glide.compiler
 
     implementation deps.android_lifecycle.common
     implementation deps.android_lifecycle.viewmodel_ktx
@@ -58,9 +60,11 @@ dependencies {
 
     implementation deps.androidx_core.androidx_core
 
-    implementation deps.constraint_layout.constraint_layout
+    implementation "androidx.constraintlayout:constraintlayout:$versions.constraint_layout"
 
     implementation deps.app_compat.app_compat
 
     implementation deps.google_material.google_material
+    implementation project(path: ':domain')
+    implementation project(path: ':data')
 }
