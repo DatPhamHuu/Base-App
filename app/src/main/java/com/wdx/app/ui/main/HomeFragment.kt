@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.wdx.app.databinding.FragmentHomeBinding
 import com.wdx.domain.Status
@@ -28,14 +29,28 @@ class HomeFragment : Fragment() {
         vm.getConfig().observe(viewLifecycleOwner) {
             when (it.status) {
                 Status.LOADING -> Log.e("getConfig()", "getConfig() - loading")
-                Status.SUCCESS -> Log.e(
-                    "getConfig()",
-                    "getConfig() - success ${it.data?.result?.FAQ ?: "No Data"}"
-                )
-                Status.ERROR -> Log.e(
-                    "getConfig()",
-                    "getConfig() - error ${it.message ?: ""}"
-                )
+                Status.SUCCESS -> {
+                    Toast.makeText(
+                        requireContext(),
+                        "getConfig() - success ${it.data?.result?.FAQ ?: "No Data"}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    Log.e(
+                        "getConfig()",
+                        "getConfig() - success ${it.data?.result?.FAQ ?: "No Data"}"
+                    )
+                }
+                Status.ERROR -> {
+                    Toast.makeText(
+                        requireContext(),
+                        "getConfig() - error ${it.message ?: ""}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    Log.e(
+                        "getConfig()",
+                        "getConfig() - error ${it.message ?: ""}"
+                    )
+                }
             }
         }
     }

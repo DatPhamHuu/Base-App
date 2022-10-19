@@ -3,7 +3,25 @@ plugins {
     id 'org.jetbrains.kotlin.android'
 }
 apply from: '../dependencies.gradle'
+
+Properties keyStoreProperties = new Properties()
+keyStoreProperties.load(project.rootProject.file('keystore.properties').newDataInputStream())
 android {
+
+    signingConfigs {
+        debug {
+            storeFile file(keyStoreProperties["KEY_STORE_PATH"])
+            storePassword keyStoreProperties["KEY_STORE_PASS"]
+            keyPassword keyStoreProperties["KEY_STORE_KEY_PASS"]
+            keyAlias keyStoreProperties["KEY_STORE_KEY_ALIAS"]
+        }
+        release {
+            storeFile file(keyStoreProperties["PROD_KEY_STORE_PATH"])
+            storePassword keyStoreProperties["PROD_KEY_STORE_PASS"]
+            keyPassword keyStoreProperties["PROD_KEY_STORE_KEY_PASS"]
+            keyAlias keyStoreProperties["PROD_KEY_STORE_KEY_ALIAS"]
+        }
+    }
     compileSdk 33
 
     defaultConfig {
@@ -14,13 +32,34 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField "String", "API_END_POINT", API_END_POINT
     }
 
     buildTypes {
         release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "API_END_POINT", API_END_POINT
+            signingConfig signingConfigs.release
+        }
+        stg {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "API_END_POINT", API_END_POINT
+            signingConfig signingConfigs.debug
+            debuggable true
+        }
+        demo {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "API_END_POINT", API_END_POINT
+            signingConfig signingConfigs.debug
+            debuggable true
+        }
+        debug {
+            minifyEnabled false
+            buildConfigField "String", "API_END_POINT", API_END_POINT
+            signingConfig signingConfigs.debug
+            debuggable true
         }
     }
     compileOptions {
@@ -60,7 +99,7 @@ dependencies {
 
     implementation deps.androidx_core.androidx_core
 
-    implementation "androidx.constraintlayout:constraintlayout:$versions.constraint_layout"
+    implementation deps.constraint_layout.constraint_layout
 
     implementation deps.app_compat.app_compat
 
